@@ -1,0 +1,14 @@
+{
+    "Lua.diagnostics.globals": [
+        "love"
+    ],
+    "Lua.runtime.version": "LuaJIT",
+    "Lua.runtime.special": {
+        "love.filesystem.load": "loadfile"
+    },
+    "Lua.workspace.library": [
+        "C:\\Users\\jackd\\Desktop\\mta-annotations-for-lua-language-server-main",
+        "C:\\Users\\jackd\\Desktop\\LOVE",
+        "${3rd}/love2d/library"
+    ]
+}
