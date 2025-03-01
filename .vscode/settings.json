@@ -1,6 +1,7 @@
 {
     "Lua.diagnostics.globals": [
-        "love"
+        "love",
+        "INITIAL_POSITION"
     ],
     "Lua.runtime.version": "LuaJIT",
     "Lua.runtime.special": {

@@ -1,18 +1,21 @@
+require("npc/npc")
+require("screen/screen")
 
-function love.load()
-    -- Initialize the NPC at the center of the screen
-    local centerX, centerY = 400, 300
+
+local npcs = {}
+table.insert(npcs, NPC.new(50, 50, "NPC 1"))
+table.insert(npcs, NPC.new(80, 80, "NPC 2"))
+
+function love.mousepressed(x, y, button)
+    for i, npc in ipairs(npcs) do
+        npc:checkClick(x, y) 
+    end
 end
 
---this is called every frame. before the draw call
-function love.update(dt)
-
-end
-
---this is called every frame. thats why we push and pop the new frame state each frame
 function love.draw()
-
-    love.graphics.push()
-    love.graphics.pop()
-    love.graphics.setColor(1, 1, 1)
+    
+    for i, npc in ipairs(npcs) do
+        npc:draw()
+    end
+    
 end
