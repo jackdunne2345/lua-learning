@@ -1,0 +1,2 @@
+MOUSE_X=0
+MOUSE_Y=0
