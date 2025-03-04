@@ -120,6 +120,7 @@ function QuadTree:query(range, found)
         for _, npc in ipairs(self.npcs) do
             if self:pointInRange(npc.x, npc.y, range) then
                 table.insert(found, npc)
+                break;
             end
         end
     end
@@ -235,7 +236,6 @@ function QuadTree:findNPCAtPosition(x, y)
     -- If this quad is divided, check only the child that contains the point
     if self.divided then
         local found = nil
-        
         if self.northwest:contains(x, y) then
             found = self.northwest:findNPCAtPosition(x, y)
         elseif self.northeast:contains(x, y) then
@@ -247,29 +247,24 @@ function QuadTree:findNPCAtPosition(x, y)
         end
         
         if found then
-            self:setSelectedNPC(found)
             return found
         end
-    end
-    
-    -- Check NPCs in this quad
-    for _, npc in ipairs(self.npcs) do
-        -- Assuming NPCs have a contains or intersects method to check if a point is inside them
-        if npc.contains and npc:contains(x, y) then
-            self:setSelectedNPC(npc)
-            return npc
+    else
+     -- Check NPCs in this quad 
+        for _, npc in ipairs(self.npcs) do
+            -- Assuming NPCs have a contains or intersects method to check if a point is inside them
+            if npc.contains and npc:contains(x, y) then
+                self:setSelectedNPC(npc)
+                return npc
+            end
         end
     end
-    
     return nil
 end
 
 -- Set and store a reference to a selected NPC
 -- @param npc: the NPC to set as selected
-function QuadTree:setSelectedNPC(npc)
-    self.selectedNPC = npc
-    return npc
-end
+
 
 -- Get the currently selected NPC
 function QuadTree:getSelectedNPC()

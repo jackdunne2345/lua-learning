@@ -43,19 +43,7 @@ function NPC:draw()
     love.graphics.pop()
 end
 
-function NPC:checkClick(mouseX, mouseY)
-    local dx = mouseX - self.x
-    local dy = mouseY - self.y
-    
-    -- Check if mouse is within the 20x20 
-    if dx >= -10 and dx <= 10 and dy >= -10 and dy <= 10 then
-        self.clicked = true
-        return true
-    else
-        self.clicked = false
-        return false
-    end
-end
+
 
 -- Get the bounds of this NPC (useful for quad tree operations)
 function NPC:getBounds()
@@ -67,18 +55,6 @@ function NPC:getBounds()
     }
 end
 
--- Check if this NPC intersects with another NPC
-function NPC:intersects(other)
-    local myBounds = self:getBounds()
-    local otherBounds = other:getBounds()
-    
-    return not (
-        myBounds.x + myBounds.width < otherBounds.x or
-        myBounds.x > otherBounds.x + otherBounds.width or
-        myBounds.y + myBounds.height < otherBounds.y or
-        myBounds.y > otherBounds.y + otherBounds.height
-    )
-end
 
 -- Check if this NPC contains a point
 function NPC:contains(x, y)
