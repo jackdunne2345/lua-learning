@@ -22,7 +22,6 @@ end
 
 function NPC:update(dt)
     self.lastX, self.lastY = self.x, self.y
-    
     self.angle = self.angle + self.speed * dt
     
     -- Example of random movement (uncomment if you want NPCs to move)
@@ -34,7 +33,7 @@ end
 
 function NPC:draw()
     love.graphics.push()
-    self:checkClick(MOUSE_X, MOUSE_Y)
+
     if(self.clicked) then
         love.graphics.print(self.name, self.x-30, self.y-30) 
     end

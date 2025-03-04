@@ -30,17 +30,7 @@ end
 
 function love.mousepressed(x, y, button)
 
-    
-    -- Example of using the quad tree to find NPCs near the mouse click
-    local nearbyNPCs = worldManager:findNPCsInRadius(x, y,200)
-    
-    -- Print the names of nearby NPCs
-    if #nearbyNPCs > 0 then
-        print("Nearby NPCs:")
-        for _, npc in ipairs(nearbyNPCs) do
-            print("- " .. npc.name)
-        end
-    end
+   worldManager.quadTree:findNPCAtPosition(x,y)
 end
 
 function love.keypressed(key)

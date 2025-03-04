@@ -228,6 +228,7 @@ end
 -- @param x, y: coordinates of the mouse click
 -- @return: the NPC found at position or nil if none
 function QuadTree:findNPCAtPosition(x, y)
+    local found={}
     -- If click is not within this quad's boundary, return nil
     if not self:contains(x, y) then
         return nil
@@ -245,16 +246,17 @@ function QuadTree:findNPCAtPosition(x, y)
         elseif self.southeast:contains(x, y) then
             found = self.southeast:findNPCAtPosition(x, y)
         end
-        
+        -- need to handle deselecting an npc  when one is selected
+        -- also need to handle the edge case when finNPC returns more than one npc 
         if found then
-            return found
+            SET_SELECTED_NPC(found)
         end
     else
      -- Check NPCs in this quad 
         for _, npc in ipairs(self.npcs) do
             -- Assuming NPCs have a contains or intersects method to check if a point is inside them
             if npc.contains and npc:contains(x, y) then
-                self:setSelectedNPC(npc)
+                SET_SELECTED_NPC(npc)
                 return npc
             end
         end
