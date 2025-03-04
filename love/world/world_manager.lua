@@ -15,7 +15,8 @@ function WorldManager.new(width, height, quadCapacity)
         npcs = {},
         quadTree = nil,
         quadCapacity = quadCapacity or 4,
-        debug = false -- Set to true to visualize the quad tree
+        debug = false,
+        clickedNpc = nil
     }
     
     -- Initialize the quad tree with the world boundaries

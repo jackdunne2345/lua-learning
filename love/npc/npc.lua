@@ -13,19 +13,16 @@ function NPC.new(x, y, name)
         y = initY,
         speed = math.rad(90),
         clicked = false,
-        -- Add properties useful for quad tree operations
         width = 20,
         height = 20,
-        lastX = initX,  -- Track previous position for quad tree updates
+        lastX = initX,  
         lastY = initY
     }, NPC)
 end
 
 function NPC:update(dt)
-    -- Store the last position before updating
     self.lastX, self.lastY = self.x, self.y
     
-    -- Update angle (this is from the original code)
     self.angle = self.angle + self.speed * dt
     
     -- Example of random movement (uncomment if you want NPCs to move)

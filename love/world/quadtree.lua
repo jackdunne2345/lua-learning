@@ -100,19 +100,28 @@ function QuadTree:query(range, found)
         return found
     end
     
-    -- Check NPCs in this quad
-    for _, npc in ipairs(self.npcs) do
-        if self:pointInRange(npc.x, npc.y, range) then
-            table.insert(found, npc)
-        end
-    end
-    
-    -- If this quad is divided, check children
+    -- If this quad is divided, check children first
     if self.divided then
-        self.northwest:query(range, found)
-        self.northeast:query(range, found)
-        self.southwest:query(range, found)
-        self.southeast:query(range, found)
+        -- Check if range completely contains this quad
+        if self:rangeContainsQuad(range) then
+            -- If range contains this quad entirely, add all NPCs without individual checks
+            for _, npc in ipairs(self.npcs) do
+                table.insert(found, npc)
+            end
+        else
+            -- Otherwise, recursively check children
+            self.northwest:query(range, found)
+            self.northeast:query(range, found)
+            self.southwest:query(range, found)
+            self.southeast:query(range, found)
+        end
+    else
+        -- If not divided, check NPCs in this quad
+        for _, npc in ipairs(self.npcs) do
+            if self:pointInRange(npc.x, npc.y, range) then
+                table.insert(found, npc)
+            end
+        end
     end
     
     return found
@@ -202,6 +211,74 @@ function QuadTree:draw()
     
     -- Reset color
     love.graphics.setColor(1, 1, 1, 1)
+end
+
+-- Add this helper method to check if a range completely contains this quad
+function QuadTree:rangeContainsQuad(range)
+    -- Assuming range has x, y, width, height properties
+    -- And the quad has boundary with x, y, width, height
+    return range.x <= self.boundary.x and
+           range.y <= self.boundary.y and
+           (range.x + range.width) >= (self.boundary.x + self.boundary.width) and
+           (range.y + range.height) >= (self.boundary.y + self.boundary.height)
+end
+
+-- Find an NPC at the given mouse position and set it as selected
+-- @param x, y: coordinates of the mouse click
+-- @return: the NPC found at position or nil if none
+function QuadTree:findNPCAtPosition(x, y)
+    -- If click is not within this quad's boundary, return nil
+    if not self:contains(x, y) then
+        return nil
+    end
+    
+    -- If this quad is divided, check only the child that contains the point
+    if self.divided then
+        local found = nil
+        
+        if self.northwest:contains(x, y) then
+            found = self.northwest:findNPCAtPosition(x, y)
+        elseif self.northeast:contains(x, y) then
+            found = self.northeast:findNPCAtPosition(x, y)
+        elseif self.southwest:contains(x, y) then
+            found = self.southwest:findNPCAtPosition(x, y)
+        elseif self.southeast:contains(x, y) then
+            found = self.southeast:findNPCAtPosition(x, y)
+        end
+        
+        if found then
+            self:setSelectedNPC(found)
+            return found
+        end
+    end
+    
+    -- Check NPCs in this quad
+    for _, npc in ipairs(self.npcs) do
+        -- Assuming NPCs have a contains or intersects method to check if a point is inside them
+        if npc.contains and npc:contains(x, y) then
+            self:setSelectedNPC(npc)
+            return npc
+        end
+    end
+    
+    return nil
+end
+
+-- Set and store a reference to a selected NPC
+-- @param npc: the NPC to set as selected
+function QuadTree:setSelectedNPC(npc)
+    self.selectedNPC = npc
+    return npc
+end
+
+-- Get the currently selected NPC
+function QuadTree:getSelectedNPC()
+    return self.selectedNPC
+end
+
+-- Clear the selected NPC
+function QuadTree:clearSelectedNPC()
+    self.selectedNPC = nil
 end
 
 return QuadTree 

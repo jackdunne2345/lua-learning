@@ -29,11 +29,10 @@ function love.update(dt)
 end
 
 function love.mousepressed(x, y, button)
-    MOUSE_X = x
-    MOUSE_Y = y
+
     
     -- Example of using the quad tree to find NPCs near the mouse click
-    local nearbyNPCs = worldManager:findNPCsInRadius(x, y, 30)
+    local nearbyNPCs = worldManager:findNPCsInRadius(x, y,200)
     
     -- Print the names of nearby NPCs
     if #nearbyNPCs > 0 then
