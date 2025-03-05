@@ -1,6 +1,16 @@
 require("npc/helpers/inital_position")
 require("mouse controlls/drag_move")
-
+---@class NPC
+---@field name string The name of the NPC
+---@field x number The x position
+---@field y number The y position
+---@field clicked boolean Whether the NPC is currently clicked
+---@field angle number The rotation angle
+---@field speed number Movement speed
+---@field width number Width of the NPC
+---@field height number Height of the NPC
+---@field lastX number Previous x position
+---@field lastY number Previous y position
 NPC = {}
 NPC.__index = NPC
 

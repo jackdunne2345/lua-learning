@@ -3,9 +3,12 @@ local QuadTree = require("world/quadtree")
 SELECTED_NPC=nil
 WorldManager = {}
 WorldManager.__index = WorldManager
-
-
+---Sets the currently selected NPC
+---@param npc NPC The NPC instance to select
 function SET_SELECTED_NPC(npc)
+    if SELECTED_NPC  then
+        SELECTED_NPC.clicked=false
+    end
     SELECTED_NPC=npc
     npc.clicked=true
 end
