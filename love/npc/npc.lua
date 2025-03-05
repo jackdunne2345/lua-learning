@@ -1,5 +1,4 @@
 require("npc/helpers/inital_position")
-require("mouse controlls/drag_move")
 ---@class NPC
 ---@field name string The name of the NPC
 ---@field x number The x position
@@ -26,7 +25,8 @@ function NPC.new(x, y, name)
         width = 20,
         height = 20,
         lastX = initX,  
-        lastY = initY
+        lastY = initY,
+        moveSpeed = 100
     }, NPC)
 end
 

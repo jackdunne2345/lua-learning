@@ -1,7 +1,8 @@
 require("npc/npc")
 require("screen/screen")
-require("mouse controlls/drag_move")
+
 require("world/world_manager")
+local Controller = require("controlls/keyboard_controlls")
 
 
 SELECTED_NPC=nil
@@ -27,9 +28,10 @@ local npcFour = worldManager:addNPC(NPC.new(10, 20, "NPC 4"))
 local npcFive = worldManager:addNPC(NPC.new(20, 40, "NPC 5"))
 local npcSix = worldManager:addNPC(NPC.new(5, 30, "NPC 6"))
 
--- Global mouse position variables
-MOUSE_X = 0
-MOUSE_Y = 0
+
+
+-- Create a single controller instance
+local controller = Controller.new()
 
 function love.load()
     -- Enable debug visualization of the quad tree (optional)
@@ -37,7 +39,7 @@ function love.load()
 end
 
 function love.update(dt)
-  
+    controller:update(dt)
     worldManager:update(dt)
 end
 
