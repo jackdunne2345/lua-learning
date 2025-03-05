@@ -1,17 +1,8 @@
 -- World Manager to handle the quad tree and NPCs
 local QuadTree = require("world/quadtree")
-SELECTED_NPC=nil
 WorldManager = {}
 WorldManager.__index = WorldManager
----Sets the currently selected NPC
----@param npc NPC The NPC instance to select
-function SET_SELECTED_NPC(npc)
-    if SELECTED_NPC  then
-        SELECTED_NPC.clicked=false
-    end
-    SELECTED_NPC=npc
-    npc.clicked=true
-end
+
 -- Create a new world manager
 -- @param width: width of the world
 -- @param height: height of the world

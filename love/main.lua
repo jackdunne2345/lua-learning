@@ -3,6 +3,19 @@ require("screen/screen")
 require("mouse controlls/drag_move")
 require("world/world_manager")
 
+
+SELECTED_NPC=nil
+
+---Sets the currently selected NPC
+---@param npc NPC The NPC instance to select
+function SET_SELECTED_NPC(npc)
+    if SELECTED_NPC  then
+        SELECTED_NPC.clicked=false
+    end
+    SELECTED_NPC=npc
+    npc.clicked=true
+end
+
 -- Initialize the world manager with the screen dimensions
 local worldManager = WorldManager.new(SCREEN_WIDTH, SCREEN_HEIGHT, 4)
 
