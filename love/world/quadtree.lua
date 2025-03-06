@@ -264,18 +264,5 @@ function QuadTree:findNPCAtPosition(x, y)
     return nil
 end
 
--- Set and store a reference to a selected NPC
--- @param npc: the NPC to set as selected
-
-
--- Get the currently selected NPC
-function QuadTree:getSelectedNPC()
-    return self.selectedNPC
-end
-
--- Clear the selected NPC
-function QuadTree:clearSelectedNPC()
-    self.selectedNPC = nil
-end
 
 return QuadTree 

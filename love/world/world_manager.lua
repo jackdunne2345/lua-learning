@@ -4,9 +4,9 @@ WorldManager = {}
 WorldManager.__index = WorldManager
 
 -- Create a new world manager
--- @param width: width of the world
--- @param height: height of the world
--- @param quadCapacity: maximum number of NPCs per quad before subdivision
+--- @param width: width of the world
+--- @param height: height of the world
+--- @param quadCapacity: maximum number of NPCs per quad before subdivision
 function WorldManager.new(width, height, quadCapacity)
     local world = {
         width = width or 800,
@@ -35,19 +35,6 @@ function WorldManager:addNPC(npc)
     self.quadTree:insert(npc)
     return npc
 end
-
--- Remove an NPC from the world
-function WorldManager:removeNPC(npc)
-    for i, storedNPC in ipairs(self.npcs) do
-        if storedNPC == npc then
-            table.remove(self.npcs, i)
-            self.quadTree:removeNPC(npc)
-            return true
-        end
-    end
-    return false
-end
-
 -- Update all NPCs in the world
 function WorldManager:update(dt)
     for _, npc in ipairs(self.npcs) do
