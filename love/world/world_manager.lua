@@ -29,30 +29,29 @@ function WorldManager.new(width, height, quadCapacity)
     return setmetatable(world, WorldManager)
 end
 
+function WorldManager:initNPC(npc)
+    print("Initializing NPC: " .. tostring(npc.id or "unknown"))
+    table.insert(self.npcs, npc)
+    self.quadTree:insert(npc)
+end
+
 -- Add an NPC to the world
 function WorldManager:addNPC(npc)
-    table.insert(self.npcs, npc)
+    print("Adding NPC: " .. tostring(npc.id or "unknown"))
     self.quadTree:insert(npc)
     return npc
 end
+
 -- Update all NPCs in the world
 function WorldManager:update(dt)
     for _, npc in ipairs(self.npcs) do
-        local oldX, oldY = npc.x, npc.y
-        
-        -- Call the NPC's update method if it exists
         if npc.update then
             npc:update(dt)
-        end
-        
-        -- If the NPC moved, update its position in the quad tree
-        if oldX ~= npc.x or oldY ~= npc.y then
-            self.quadTree:updateNPC(npc, oldX, oldY)
         end
     end
 end
 
--- Draw all NPCs and optionally the quad tree
+
 function WorldManager:draw()
     -- Draw all NPCs
     for _, npc in ipairs(self.npcs) do
@@ -67,7 +66,6 @@ function WorldManager:draw()
     end
 end
 
--- Find all NPCs within a rectangular region
 function WorldManager:findNPCsInRegion(x, y, width, height)
     local range = {
         x = x,

@@ -5,9 +5,9 @@ QuadTree = {}
 QuadTree.__index = QuadTree
 
 -- Create a new QuadTree node
--- @param boundary: table with x, y, width, height defining the region
+--- @param boundary: table with x, y, width, height defining the region
 -- @param capacity: maximum number of objects before subdivision
-function QuadTree.new(boundary, capacity)
+function QuadTree.new(boundary, capacity, name)
     local qt = {
         boundary = boundary,
         capacity = capacity or 4,
@@ -16,7 +16,8 @@ function QuadTree.new(boundary, capacity)
         northwest = nil,
         northeast = nil,
         southwest = nil,
-        southeast = nil
+        southeast = nil,
+        name=name or nil
     }
     return setmetatable(qt, QuadTree)
 end
@@ -37,10 +38,10 @@ function QuadTree:subdivide()
     local h = self.boundary.height / 2
 
     -- Create four children
-    self.northwest = QuadTree.new({x = x, y = y, width = w, height = h}, self.capacity)
-    self.northeast = QuadTree.new({x = x + w, y = y, width = w, height = h}, self.capacity)
-    self.southwest = QuadTree.new({x = x, y = y + h, width = w, height = h}, self.capacity)
-    self.southeast = QuadTree.new({x = x + w, y = y + h, width = w, height = h}, self.capacity)
+    self.northwest = QuadTree.new({x = x, y = y, width = w, height = h}, self.capacity,"northwest")
+    self.northeast = QuadTree.new({x = x + w, y = y, width = w, height = h}, self.capacity,"northeast")
+    self.southwest = QuadTree.new({x = x, y = y + h, width = w, height = h}, self.capacity,"southwest")
+    self.southeast = QuadTree.new({x = x + w, y = y + h, width = w, height = h}, self.capacity,"southeast")
     
     -- Mark as divided
     self.divided = true
@@ -75,8 +76,13 @@ function QuadTree:insert(npc)
     end
     
     -- If there's space in this quad and it's not divided, add here
-    if #self.npcs < self.capacity and not self.divided then
+    if #self.npcs < self.capacity then
         table.insert(self.npcs, npc)
+        npc.quad = self
+        print("npc inserted into quadtree: " .. tostring(npc.id or "unknown") .. 
+              " at position (" .. npc.x .. "," .. npc.y .. 
+              "), divided: " .. tostring(self.divided) .. 
+              ", name: " .. tostring(self.name))
         return true
     end
     
@@ -84,9 +90,8 @@ function QuadTree:insert(npc)
     if not self.divided then
         self:subdivide()
     end
-    
-    -- Try to insert into children
-    return self:insertToChildren(npc)
+
+   return self:insertToChildren(npc)
 end
 
 -- Query the quad tree for all NPCs within a region
@@ -163,35 +168,19 @@ function QuadTree:updateNPC(npc, oldX, oldY)
     
     -- Remove from current position and reinsert
     self:removeNPC(npc, oldX, oldY)
-    return self:insert(npc)
+    WORLD_MANAGER:addNPC(npc)
+    
 end
 
 -- Remove an NPC from the quad tree
-function QuadTree:removeNPC(npc, x, y)
-    x = x or npc.x
-    y = y or npc.y
-    
-    -- If this point is not within boundary, it's not here
-    if not self:contains(x, y) then
-        return false
-    end
-    
-    -- Check if the NPC is in this quad
+function QuadTree:removeNPC(npc)
     for i, storedNPC in ipairs(self.npcs) do
         if storedNPC == npc then
             table.remove(self.npcs, i)
+            print("removed npc from quadtree")
             return true
         end
     end
-    
-    -- If this quad is divided, check children
-    if self.divided then
-        if self.northwest:removeNPC(npc, x, y) then return true end
-        if self.northeast:removeNPC(npc, x, y) then return true end
-        if self.southwest:removeNPC(npc, x, y) then return true end
-        if self.southeast:removeNPC(npc, x, y) then return true end
-    end
-    
     return false
 end
 
@@ -229,26 +218,27 @@ end
 -- @return: the NPC found at position or nil if none
 function QuadTree:findNPCAtPosition(x, y)
     local found={}
-    -- If click is not within this quad's boundary, return nil
     if not self:contains(x, y) then
+        print("not valid coordinates")
         return nil
     end
     
-    -- If this quad is divided, check only the child that contains the point
     if self.divided then
         local found = nil
         if self.northwest:contains(x, y) then
-            found = self.northwest:findNPCAtPosition(x, y)
+            return self.northwest:findNPCAtPosition(x, y)
+            
         elseif self.northeast:contains(x, y) then
-            found = self.northeast:findNPCAtPosition(x, y)
+            return self.northeast:findNPCAtPosition(x, y)
         elseif self.southwest:contains(x, y) then
-            found = self.southwest:findNPCAtPosition(x, y)
+            return self.southwest:findNPCAtPosition(x, y)
         elseif self.southeast:contains(x, y) then
-            found = self.southeast:findNPCAtPosition(x, y)
+            return self.southeast:findNPCAtPosition(x, y)
         end
         -- need to handle deselecting an npc  when one is selected
         -- also need to handle the edge case when finNPC returns more than one npc 
         if found then
+            print("found npc1")
             SET_SELECTED_NPC(found)
         end
     else
@@ -256,11 +246,14 @@ function QuadTree:findNPCAtPosition(x, y)
         for _, npc in ipairs(self.npcs) do
             -- Assuming NPCs have a contains or intersects method to check if a point is inside them
             if npc.contains and npc:contains(x, y) then
+                npc.quad=self
+                print("found npc2")
                 SET_SELECTED_NPC(npc)
                 return npc
             end
         end
     end
+    print("no npc found")
     return nil
 end
 

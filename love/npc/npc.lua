@@ -10,6 +10,7 @@ require("npc/helpers/inital_position")
 ---@field height number Height of the NPC
 ---@field lastX number Previous x position
 ---@field lastY number Previous y position
+---@field quad QuadTree The quad that currently contains this NPCs
 NPC = {}
 NPC.__index = NPC
 
@@ -24,21 +25,19 @@ function NPC.new(x, y, name)
         clicked = false,
         width = 20,
         height = 20,
-        lastX = initX,  
+        lastX = initX,
         lastY = initY,
-        moveSpeed = 100
+        moveSpeed = 100,
+        quad=nil
     }, NPC)
 end
 
 function NPC:update(dt)
-    self.lastX, self.lastY = self.x, self.y
-    self.angle = self.angle + self.speed * dt
-    
-    -- Example of random movement (uncomment if you want NPCs to move)
-    -- if math.random() < 0.01 then
-    --     self.x = self.x + math.random(-5, 5)
-    --     self.y = self.y + math.random(-5, 5)
-    -- end
+    if(self.x >self.quad.boundary.x+self.quad.boundary.width or self.x < self.quad.boundary.x or self.y > self.quad.boundary.y+self.quad.boundary.height or self.y < self.quad.boundary.y) then
+        self.quad:removeNPC(self)
+        self.quad=nil
+        WORLD_MANAGER:addNPC(self)
+    end
 end
 
 function NPC:draw()

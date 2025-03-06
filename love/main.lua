@@ -18,15 +18,16 @@ function SET_SELECTED_NPC(npc)
 end
 
 -- Initialize the world manager with the screen dimensions
-local worldManager = WorldManager.new(SCREEN_WIDTH, SCREEN_HEIGHT, 4)
+ WORLD_MANAGER = WorldManager.new(SCREEN_WIDTH, SCREEN_HEIGHT, 4)
 
 -- Create NPCs and add them to the world manager
-local npcOne = worldManager:addNPC(NPC.new(50, 50, "NPC 1"))
-local npcTwo = worldManager:addNPC(NPC.new(80, 80, "NPC 2"))
-local npcThree = worldManager:addNPC(NPC.new(20, 70, "NPC 3"))
-local npcFour = worldManager:addNPC(NPC.new(10, 20, "NPC 4"))
-local npcFive = worldManager:addNPC(NPC.new(20, 40, "NPC 5"))
-local npcSix = worldManager:addNPC(NPC.new(5, 30, "NPC 6"))
+
+local npcOne = WORLD_MANAGER:initNPC(NPC.new(50, 50, "NPC 1"))
+local npcTwo = WORLD_MANAGER:initNPC(NPC.new(80, 80, "NPC 2"))
+local npcThree = WORLD_MANAGER:initNPC(NPC.new(20, 70, "NPC 3"))
+local npcFour = WORLD_MANAGER:initNPC(NPC.new(10, 20, "NPC 4"))
+local npcFive = WORLD_MANAGER:initNPC(NPC.new(20, 40, "NPC 5"))
+local npcSix = WORLD_MANAGER:initNPC(NPC.new(20, 30, "NPC 6"))
 
 
 
@@ -35,34 +36,26 @@ local controller = Controller.new()
 
 function love.load()
     -- Enable debug visualization of the quad tree (optional)
-    worldManager.debug = true
+    WORLD_MANAGER.debug = true
 end
 
 function love.update(dt)
     controller:update(dt)
-    worldManager:update(dt)
+    WORLD_MANAGER:update(dt)
 end
 
-function love.mousepressed(x, y, button)
-
-   worldManager.quadTree:findNPCAtPosition(x,y)
+function love.mousepressed(x, y)
+    WORLD_MANAGER.quadTree:findNPCAtPosition(x,y)
 end
 
 function love.keypressed(key)
     -- Toggle quad tree visualization with the 'q' key
     if key == "q" then
-        worldManager:toggleDebug()
-    end
-    
-    -- Add a new NPC at a random position with the 'n' key
-    if key == "n" then
-        local x = math.random(50, 750)
-        local y = math.random(50, 550)
-        worldManager:addNPC(NPC.new(x, y, "NPC " .. (#worldManager.npcs + 1)))
+        WORLD_MANAGER:toggleDebug()
     end
 end
 
 function love.draw()
     -- Let the world manager handle drawing NPCs and the quad tree
-    worldManager:draw()
+    WORLD_MANAGER:draw()
 end

@@ -39,6 +39,7 @@ function Controller:update(dt)
     -- Apply movement to the selected NPC
     SELECTED_NPC.x = SELECTED_NPC.x + (dx * moveSpeed * dt)
     SELECTED_NPC.y = SELECTED_NPC.y + (dy * moveSpeed * dt)
+    SELECTED_NPC:update(dt)
 end
 
 return Controller
