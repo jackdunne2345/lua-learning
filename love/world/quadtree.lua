@@ -76,7 +76,7 @@ function QuadTree:insert(npc)
     end
     
     -- If there's space in this quad and it's not divided, add here
-    if #self.npcs < self.capacity then
+    if #self.npcs < self.capacity and not self.divided then
         table.insert(self.npcs, npc)
         npc.quad = self
         print("npc inserted into quadtree: " .. tostring(npc.id or "unknown") .. 

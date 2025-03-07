@@ -30,7 +30,7 @@ function WorldManager.new(width, height, quadCapacity)
 end
 
 function WorldManager:initNPC(npc)
-    print("Initializing NPC: " .. tostring(npc.id or "unknown"))
+    print("Initializing NPC: " .. tostring(npc.name or "unknown"))
     table.insert(self.npcs, npc)
     self.quadTree:insert(npc)
 end
